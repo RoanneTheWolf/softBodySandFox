@@ -25,6 +25,7 @@
         <br>It is the natural state of <em>Vulpes Ubera</em>, the big titty fox gf, to wobble.
         <br>(And to grow)
         <br>(but you can press G to pause the growth)
+        <br>Current size: <span id="sizeDisplay">1 meter</span>
         <br><span id="warningMessage" class="noDisplay" style="color:pink;">There's still a few bugs. Swing the boobs in a circle and they usually fix themselves.</span>
         </div>
     <svg width="100%"
@@ -462,6 +463,8 @@
 
         function eachFrame() {
             //No math should be done here, just rerendering of foxes.
+
+            document.getElementById("sizeDisplay").innerText = lengthUnit(boobs.sizeMult * 2.5);
 
             if(keys.z == true) {
                 zoomTarget *= 1.5 ** (1/framesPerSecond);
@@ -1064,6 +1067,39 @@
             //testPoint(path[path.length-2], "point2", "purple", 1);
             return result;
             
+        }
+
+        function lengthUnit(value) {
+            let unit = "";
+            if (value < 1) {
+                value *= 100;
+                unit = "centimeter"
+            } else if (value < 1000) {
+                unit = "meter"
+            } else if (value < 12756000) {
+                value /= 1000;
+                unit = "kilometer"
+            } else if (value < 149600000000) {
+                value /= 12756000;
+                unit = "earth-length"
+            } else if (value < 9461000000000000) {
+                value /= 149600000000
+                unit = "astronomical unit"
+            } else if (value < 946100000000000000000) {
+                value /= 9461000000000000
+                unit = "light-year"
+            } else if (value < 880000000000000000000000000) {
+                value /= 9461000000000000
+                unit = "galaxy-length"
+            } else {
+                value /= 880000000000000000000000000;
+                unit = "universe"
+            }
+            value = Math.floor(value * 100)/100;
+            if (value != 1) {
+                unit += "s";
+            }
+            return value + " " + unit;
         }
 
         function addVectors(p1, p2) {
