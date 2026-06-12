@@ -1,0 +1,1559 @@
+<html>
+<body>
+    <style>
+        body {
+            background-color: #222222
+            
+        }
+        .noDisplay {
+            display: none;
+        }
+
+        
+
+        
+
+
+    </style>
+    <div style="position:relative; float: left; color: white; pointer-events: none; user-select: none;">
+        WASD/arrow keys to move
+        <br>Shift to sprint
+        <br>Q/E to rotate
+        <br>Z/X to zoom
+        <br>Grab the fox by the head to wiggle them around
+        <br>Shift+click to place a circular collider
+        <br>Click the fox to make the boobs bigger
+        <br>It is the natural state of <em>Vulpes Ubera</em>, the big titty fox gf, to wobble.
+        <br>(And to grow)
+        <br>(but you can press G to pause the growth)
+        <br>Stiffness Factor (+/- keys): <span id="squishDisplay">1</span>x
+        <br>Gravity ([/] keys): <span id="gravityDisplay">19</span>
+        <br>Current size: <span id="sizeDisplay">1 meter</span>
+        <br><span id="warningMessage" class="noDisplay" style="color:pink;">There's still a few bugs. Swing the boobs in a circle and they usually fix themselves.</span>
+        </div>
+    <svg width="100%"
+         viewBox="-2500 -1250 5000 2500"
+         style="fill:#ffffff;stroke:#000000;stroke-width:0.3;stroke-linecap:round;stroke-linejoin:round; position: absolute; top: 0px; left: 0px;"
+         id="mainSVG">
+
+        <g onclick="testClick()" id="wholeFox">
+            <g id="shoulders">
+                <path d="M -3.3506545,2.286585 C -3.3506545,2.286585 0.2880455,8.123585 3.1393455,2.065585 3.1393455,2.065585 19.796545,-18.856415 19.748646,-29.740415 19.743745,-40.623415 8.5638455,-49.678415 -5.8234545,-49.110415 -20.210854,-48.538415 -30.777454,-26.817415 -30.777454,-26.817415 -30.777454,-26.817415 -8.3912545,-40.811415 2.2932455,-26.166415 12.977746,-11.517415 -3.3506545,2.280585 -3.3506545,2.280585 Z" />
+                <path d="M 11.070045,8.121585 C 18.628246,5.638585 21.693746,6.275585 21.691845,2.180585 21.689945,-1.913415 18.339745,-1.264415 10.773346,-3.738415 7.6274455,-4.767415 3.3632455,-6.784415 -2.545e-4,-6.782415 -3.3626545,-6.780415 -7.6260545,-4.759415 -10.771955,-3.726415 -18.333154,-1.244415 -21.686054,-2.030415 -21.684154,2.202585 -21.682154,6.435585 -18.620354,5.646585 -11.056955,8.121585" />
+            </g>
+            <path d="M -11.056757,8.1215913 C -128.84796,-11.902519 -158.64844,87.89164 -121.00726,139.88494 -85.838705,188.4628 -10.759087,171.06621 0.006644,144.66892 10.772375,171.06621 85.851993,188.4628 121.02055,139.88494 158.66173,87.891637 128.86125,-11.902525 11.070045,8.121585"
+                  id="rightBoob"
+                  style="opacity:1"/>
+            <path d="M -11.056757,8.1215913 C -128.84796,-11.902519 -158.64844,87.89164 -121.00726,139.88494 -85.838705,188.4628 -10.759087,171.06621 0.006644,144.66892 10.772375,171.06621 85.851993,188.4628 121.02055,139.88494 158.66173,87.891637 128.86125,-11.902525 11.070045,8.121585"
+                  id="leftBoob"
+                  style="opacity:1"/>
+            <path d=""
+                  id="cleavage" />
+            <g id="head" style="opacity: 1">
+                <path d="M 8.3431995,-0.004095 C 8.1916785,3.896355 6.6277715,4.715935 5.2542275,6.221265 3.9471565,7.653785 3.7809485,9.328335 3.4889315,11.413815 3.3347565,12.514805 2.4216345,15.180735 1.3178115,15.181275 L 0.0069305,15.181925 -1.3039505,15.182565 C -2.4077645,15.183105 -3.3233315,12.518075 -3.4785125,11.417235 -3.7724005,9.332045 -3.9401385,7.657665 -5.2485435,6.226425 -6.6234625,4.722445 -8.1881095,3.904405 -8.3432025,0.004095 -8.4982875,-3.896125 -4.6092725,-8.320975 -0.0038085,-8.323235 4.6016635,-8.325495 8.4947375,-3.904475 8.3431995,-0.004095 Z" />
+                <path d="M 7.2535855,0.589885 8.7261145,5.776295 2.9061245,1.799475 C 3.8718815,0.674095 5.3033435,0.244525 7.2535855,0.589885 Z" />
+                <path d="M -7.2923045,0.636205 -8.7600935,5.824055 -2.9437395,1.841525 C -3.9105255,0.717085 -5.3423785,0.288935 -7.2923045,0.636205 Z" />
+            </g>
+        </g>
+
+        <path id="testPath" style="fill:red"></path>
+
+    </svg>
+
+
+
+
+    <script>
+
+        let originalBoobPath = [
+            { x: -11.056757, y: 8.1215913 },
+            { x: -128.84796, y: -11.902519 },
+            { x: -158.64844, y: 87.89164 },
+            { x: -121.00726, y: 139.88494 },
+            { x: -85.838705, y: 188.4628 },
+            { x: -10.759087, y: 171.06621 },
+            { x: 0, y: 144.66892 },
+            { x: 10.772375, y: 171.06621 },
+            { x: 85.851993, y: 188.4628 },
+            { x: 121.02055, y: 139.88494 },
+            { x: 158.66173, y: 87.891637 },
+            { x: 128.86125, y: -11.902525 },
+            { x: 11.070045, y: 8.121585 }
+        ];
+        let boobTemplate = [
+            { x: -11.056757, y: 8.1215913 },
+            { x: -128.84796, y: -11.902519 },
+            { x: -158.64844, y: 87.89164 },
+            { x: -121.00726, y: 139.88494 },
+            { x: -85.838705, y: 188.4628 },
+            { x: -10.759087, y: 171.06621 },
+            { x: 0, y: 144.66892 },
+            { x: 0, y: 144.66892 },
+            { x: 0, y: 100 },
+            { x: 0, y: 5 }
+        ];
+
+        let foxTemplate = {
+            rightBoob: {
+                template: [
+                    { x: -11.056757, y: 8.1215913 },
+                    { x: -128.84796, y: -11.902519 },
+                    { x: -158.64844, y: 87.89164 },
+                    { x: -121.00726, y: 139.88494 },
+                    { x: -85.838705, y: 188.4628 },
+                    { x: -10.759087, y: 171.06621 },
+                    { x: 0, y: 144.66892 },
+                    { x: 0, y: 144.66892 },
+                    { x: 0, y: 10.1215913 },
+                    { x: 0, y: 10.1215913 }
+                ],
+                currentPoints: [],
+                oldPoints: [],
+                dotsPerLine: 15,
+                currentArea: 0,
+                idealArea: 0,
+                sizeMult: 1,
+                counterClockwise: true,
+                regularConnections: [],
+                bodyType: "soft",
+                id: "foxBoob"
+            },
+            leftBoob: {
+                template: [
+                    { x: 11.056757, y: 8.1215913 },
+                    { x: 128.84796, y: -11.902519 },
+                    { x: 158.64844, y: 87.89164 },
+                    { x: 121.00726, y: 139.88494 },
+                    { x: 85.838705, y: 188.4628 },
+                    { x: 10.759087, y: 171.06621 },
+                    { x: 0, y: 144.66892 },
+                    { x: 0, y: 144.66892 },
+                    { x: 0, y: 10.1215913 },
+                    { x: 0, y: 10.1215913 }
+                ],
+                currentPoints: [],
+                oldPoints: [],
+                dotsPerLine: 15,
+                currentArea: 0,
+                idealArea: 0,
+                sizeMult: 1,
+                counterClockwise: false,
+                regularConnections: [],
+                bodyType: "soft",
+                id: "foxBoob"
+            },
+            body: {
+                template: [
+                    {x:11.070045, y:8.121585}, //This is the left shoulder point
+                    {x:18.628246, y:5.638585},
+                    {x:21.693746, y:6.275585},
+                    {x:21.691845, y:2.180585},
+                    {x:21.689945, y:-1.913415},
+                    {x:18.339745, y:-1.264415},
+                    {x:10.773346, y:-3.738415},
+                    {x:7.6274455, y:-4.767415},
+                    {x:3.3632455, y:-6.784415},
+                    {x:-2.545e-4, y:-6.782415},
+                    {x:-3.3626545, y:-6.780415},
+                    {x:-7.6260545, y:-4.759415},
+                    {x:-10.771955, y:-3.726415},
+                    {x:-18.333154, y:-1.244415},
+                    {x:-21.686054, y:-2.030415},
+                    {x:-21.684154, y:2.202585},
+                    {x:-21.682154, y:6.435585},
+                    {x:-18.620354, y:5.646585},
+                    {x:-11.056955, y:8.121585}, //This is the right shoulder point
+                    {x:-11.056955, y:8.121585},
+                    {x:11.070045, y:8.121585}, //This is the left shoulder point
+                    {x:11.070045, y:8.121585}
+                ],
+                currentPoints: [],
+                position: {x: 0, y: 0},
+                oldPosition: {x: 0, y: 0},
+                angle: 0,
+                oldAngle: 0,
+                idealArea: 0,
+                sizeMult: 1,
+                counterClockwise: false,
+                regularConnections: [],
+                bodyType: "rigid",
+                id: "foxBody"
+            },
+            attachments: []
+
+            
+        }
+
+
+
+        let centerTemplate = { x: -75, y: 100 }
+        var boobPath = [];
+        var gravity = 10;
+        var friction = 0.05
+        var colliderRadius = 50
+        var squishFactor = 1.15
+
+        var dotPath = [],
+            idealBoobArea = 0,
+            currentBoobArea = 0,
+            regularConnections = [];
+        var fox = {
+            position: {
+                x: 0, y: 0
+            },
+            angle: 0
+        }
+
+        var testSlime = { //An example softbody. It will be constructed from nothing but math.
+            base: {//Everything here will only be used as reference.
+                perimeter: 200,
+                area: 2500,
+                nodes: 50,
+                edgeAttraction: 1,
+                edgeRepulsion: 1,
+                shape: "circle"
+            },
+            currentPoints:[],
+            oldPoints:[],
+            edgeLength: 0,
+            sizeMult: 1, //Diametral size multiplier. The area will be changed by this value squared.
+            element: undefined
+        }
+
+        var foxBody = {
+            template: [
+                {x:11.070045, y:8.121585}, //This is the left shoulder point
+                {x:18.628246, y:5.638585},
+                {x:21.693746, y:6.275585},
+                {x:21.691845, y:2.180585},
+                {x:21.689945, y:-1.913415},
+                {x:18.339745, y:-1.264415},
+                {x:10.773346, y:-3.738415},
+                {x:7.6274455, y:-4.767415},
+                {x:3.3632455, y:-6.784415},
+                {x:-2.545e-4, y:-6.782415},
+                {x:-3.3626545, y:-6.780415},
+                {x:-7.6260545, y:-4.759415},
+                {x:-10.771955, y:-3.726415},
+                {x:-18.333154, y:-1.244415},
+                {x:-21.686054, y:-2.030415},
+                {x:-21.684154, y:2.202585},
+                {x:-21.682154, y:6.435585},
+                {x:-18.620354, y:5.646585},
+                {x:-11.056955, y:8.121585}, //This is the right shoulder point
+                {x:-11.056955, y:8.121585},
+                {x:11.070045, y:8.121585}, //This is the left shoulder point
+                {x:11.070045, y:8.121585}
+            ],
+            dotsPerLine: 4,
+            counterClockwise: false,
+            position: {x: 0, y: 0},
+            oldPosition: {x: 0, y: 0},
+            angle: 0,
+            oldAngle: 0,
+            centerMass: {x: 0, y: 0},
+            positionOffset: {x: 0, y: 0},
+            originalDeltas: [],
+            currentPoints: [],
+            closed: false,
+            bodyType: "rigid",
+            id: "foxBody",
+            element: [document.getElementById("shoulders"), document.getElementById("head")]
+        }
+
+
+        var boobs = {
+            left: {
+                template: [
+                    { x: -11.056757, y: 8.1215913 },
+                    { x: -128.84796, y: -11.902519 },
+                    { x: -158.64844, y: 87.89164 },
+                    { x: -121.00726, y: 139.88494 },
+                    { x: -85.838705, y: 188.4628 },
+                    { x: -10.759087, y: 171.06621 },
+                    { x: 0, y: 144.66892 },
+                    { x: 0, y: 144.66892 },
+                    { x: 0, y: 10.1215913 },
+                    { x: 0, y: 10.1215913 }
+                ],
+                dotPath: [],
+                dotsPerLine: 15,
+                currentPoints: [],
+                oldPoints: [],
+                currentArea: 0,
+                idealArea: 0,
+                lengthSum: 0,
+                counterClockwise: true,
+                regularConnections: [],
+                shapeCenter: { x: -37.5, y: 50 },
+                bodyType: "soft",
+                id: "foxBoob",
+            },
+            right: {
+                template: [
+                    { x: 11.056757, y: 8.1215913 },
+                    { x: 128.84796, y: -11.902519 },
+                    { x: 158.64844, y: 87.89164 },
+                    { x: 121.00726, y: 139.88494 },
+                    { x: 85.838705, y: 188.4628 },
+                    { x: 10.759087, y: 171.06621 },
+                    { x: 0, y: 144.66892 },
+                    { x: 0, y: 144.66892 },
+                    { x: 0, y: 10.1215913 },
+                    { x: 0, y: 10.1215913 }
+                ],
+                dotPath: [],
+                dotsPerLine: 15,
+                currentPoints: [],
+                oldPoints: [],
+                fixedPoints: {},
+                currentArea: 0,
+                idealArea: 0,
+                lengthSum: 0,
+                counterClockwise: false,
+                regularConnections: [],
+                shapeCenter: { x: 37.5, y: 50 },
+                bodyType: "soft",
+                id: "foxBoob"
+            },
+            lengthSum: 0,
+            dotsPerLine: 30,
+            sizeMult: 0.4,
+            centerReference: {
+                x: 75,
+                y: 75
+            },
+            cleavagePoint: {
+                x: 0,
+                y: 10.1215913
+            }
+        }
+        var colliderPosition = { x: 10000, y: 10000 };
+        var svg = document.getElementById("mainSVG");
+        var svgRect = svg.getBoundingClientRect();
+        var grabbedCoords;
+        var foxGrabbed = false;
+        svg.addEventListener('mousedown', function (event) {
+            clickedCoords = {
+                x: (event.clientX - svgRect.x) * (currentScreen.width / svgRect.width) + currentScreen.x,
+                y: (event.clientY - svgRect.y) * (currentScreen.height / svgRect.height) + currentScreen.y
+            }
+            if (event.shiftKey) {
+                colliderPosition = clickedCoords;
+                testPoint(colliderPosition, "collider", "green", colliderRadius)
+            }
+        }, false)
+        document.getElementById("wholeFox").addEventListener('mousedown', function (event) {
+            grabbedCoords = {
+                x: (event.clientX - svgRect.x) * (currentScreen.width / svgRect.width) + currentScreen.x,
+                y: (event.clientY - svgRect.y) * (currentScreen.height / svgRect.height) + currentScreen.y
+            }
+            foxGrabbed = true;
+        }, false)
+         svg.addEventListener('mousemove', function (event) {
+            if(foxGrabbed) {
+                let heldCoords = {
+                x: (event.clientX - svgRect.x) * (currentScreen.width / svgRect.width) + currentScreen.x,
+                y: (event.clientY - svgRect.y) * (currentScreen.height / svgRect.height) + currentScreen.y
+            }
+            foxBody.oldPosition.x = foxBody.position.x;
+            foxBody.oldPosition.y = foxBody.position.y;
+            foxBody.position.x += (heldCoords.x - grabbedCoords.x);
+            foxBody.position.y += (heldCoords.y - grabbedCoords.y);
+            grabbedCoords = heldCoords;
+            }
+        }, false)
+        document.addEventListener('mouseup', function (event) {
+            foxGrabbed = false;
+        }, false)
+
+        var baseScreen = {
+            x: -2500,
+            y: -1250,
+            width: 5000,
+            height: 2500
+        }
+        var zoomTarget = 0.2
+        var zoomLevel = 0.2;
+        var autoGrow = true;
+        var currentScreen = {}
+        function updateZoom() {
+            for(let property in baseScreen) {
+                currentScreen[property] = baseScreen[property] * zoomLevel;
+            }
+        }
+        updateZoom();
+        console.log(currentScreen);
+
+        var keys = {
+            a: 0,
+            s: 0,
+            d: 0,
+            w: 0,
+            q: 0,
+            e: 0,
+            arrowup: 0,
+            arrowdown: 0,
+            arrowright: 0,
+            arrowleft: 0,
+            shift: false
+        }
+            
+
+        var currentBoobPoints = [];
+        var oldBoobPoints = [];
+        var lengthsum = 0;
+
+
+        let ticksPerSecond = 100;
+        let framesPerSecond = 20;
+
+        sizeChanged();
+        generateRigidBody(foxBody);
+        for (i = 0; i < dotPath.length; i++) {
+
+            boobs.left.currentPoints[i] = {
+                x: dotPath[i].x,
+                y: dotPath[i].y
+            }
+            boobs.left.oldPoints[i] = {
+                x: dotPath[i].x,
+                y: dotPath[i].y
+            }
+
+            boobs.right.currentPoints[i] = {
+                x: -dotPath[i].x, //dotPath.length - i - 1
+                y: dotPath[i].y
+            }
+            boobs.right.oldPoints[i] = {
+                x: -dotPath[i].x,
+                y: dotPath[i].y
+            }
+        }
+
+        let ticker = setInterval(eachTick, 1000 / ticksPerSecond);
+        let frames = setInterval(eachFrame, 1000 / ticksPerSecond);
+
+        function eachTick() {
+            //No rendering should be done here, just physics and math.
+            updateZoom();
+            zoomLevel += (zoomTarget - zoomLevel) * 10 / ticksPerSecond
+            if(autoGrow) {
+                if(keys.y) {
+                    //boobs.sizeMult /= 1.05 ** (1/ticksPerSecond); //HAVE to turn this off before publishing any versions.
+                } else {
+                    boobs.sizeMult *= 1.05 ** (1/ticksPerSecond);
+                    if(keys.shift) {
+                        boobs.sizeMult *= 1.5 ** (1/ticksPerSecond);
+                    }
+                }
+                if(boobs.left.idealArea * 1 > (2500 * 5000 * zoomTarget ** 2)) {
+                    zoomTarget *= 2;
+                }
+                sizeChanged();
+            }
+            let foxSpeed = 50 * zoomLevel * (keys.shift ? 3 : 1);
+            if(keys.w || keys.arrowup) {
+                foxBody.position.y -= (foxSpeed) / ticksPerSecond
+            }
+            if(keys.s || keys.arrowdown) {
+                foxBody.position.y += foxSpeed / ticksPerSecond
+            }
+            if(keys.a || keys.arrowleft) {
+                foxBody.position.x -= foxSpeed / ticksPerSecond
+            }
+            if(keys.d || keys.arrowright) {
+                foxBody.position.x += foxSpeed / ticksPerSecond
+            }
+            if(keys.q) {
+                foxBody.angle -= Math.PI/10 / ticksPerSecond
+            }
+            if(keys.e) {
+                foxBody.angle += Math.PI/10 / ticksPerSecond
+            }
+
+
+            verletIntegrate(boobs.left);
+            verletIntegrate(boobs.right);
+            if(!foxGrabbed) {
+                verletIntegrate(foxBody);     
+            }       
+            rigidConstraint2(foxBody);
+            
+            for (let o = 0; o <= 10; o++) {
+                volumeConstraint(boobs.left);
+                volumeConstraint(boobs.right);
+
+                edgeConstraint(boobs.left);
+                edgeConstraint(boobs.right);
+
+                cleavageConstraint(boobs.left, boobs.right)
+               //softBodyCollision(boobs.left, boobs.right);
+               //softBodyCollision(boobs.right, boobs.left);
+                //detectCollision(boobs.left, boobs.right);
+               
+            
+
+
+                for (let boob of ["left", "right"]) {
+                    //This is the circular collider?
+                    let currentPoints = boobs[boob].currentPoints
+                    for (i = 0; i < currentPoints.length; i++) {
+                        let delta = deltaDistillation(colliderPosition, currentPoints[i])
+
+                        if (delta.magnitude < colliderRadius) {
+                            currentPoints[i].x -= (colliderRadius - delta.magnitude) * Math.cos(delta.angle)
+                            currentPoints[i].y -= (colliderRadius - delta.magnitude) * Math.sin(delta.angle)
+                        }
+                        
+                    }
+                }
+                testPoint(colliderPosition, "collider", "green", colliderRadius);
+
+                for (let boob of ["left", "right"]) { //Preventing shoulder points from moving and establishing borders
+                boobs[boob].currentPoints[0] = transformPoint(switchBoob(boobTemplate[0], boob), foxBody.position, foxBody.angle);
+
+                boobs[boob].currentPoints[boobs[boob].currentPoints.length - 1] = transformPoint(switchBoob(boobTemplate[9], boob), foxBody.position, foxBody.angle);
+                //boobs.cleavagePoint = transformPoint(boobTemplate[9], fox.position, fox.angle);
+
+                for (i = 0; i < boobs[boob].currentPoints.length; i++) {
+                    if (boobs[boob].currentPoints[i].x > -currentScreen.x) {
+                        boobs[boob].currentPoints[i].x = -currentScreen.x;
+                    } else if (boobs[boob].currentPoints[i].x < currentScreen.x) {
+                        boobs[boob].currentPoints[i].x = currentScreen.x;
+                    } else if (boobs[boob].currentPoints[i].y > -currentScreen.y) {
+                        boobs[boob].currentPoints[i].y = -currentScreen.y;
+                    } else if (boobs[boob].currentPoints[i].y < currentScreen.y) {
+                        boobs[boob].currentPoints[i].y = currentScreen.y;
+                    } //These are the screen edge constraints. They won't work after I change the zoom method.
+                }
+            }
+
+
+            }
+
+            
+
+            
+            
+        }
+
+        document.addEventListener('keydown', (event) => {
+            keys[event.key.toLowerCase()] = true
+            if(event.key.toLowerCase() == "g") {
+                autoGrow = !autoGrow;
+            } else if (event.key == "+" || event.key == "=") {
+                squishFactor += 0.01;
+                sizeChanged();
+            } else if (event.key == "-" || event.key == "_") {
+                squishFactor -= 0.01;
+                sizeChanged();
+            } else if (event.key == "[") {
+                gravity -= 0.5;
+            } else if (event.key == "]") {
+                gravity += 0.5;
+            }
+        });
+
+        document.addEventListener('keyup', (event) => {
+            keys[event.key.toLowerCase()] = false
+        });
+
+
+        function eachFrame() {
+            //No math should be done here, just rerendering of foxes.
+
+            document.getElementById("sizeDisplay").innerText = lengthUnit(boobs.sizeMult * 2.5);
+            document.getElementById("squishDisplay").innerText = Math.round(squishFactor * 100)/100;
+            document.getElementById("gravityDisplay").innerText = Math.round(gravity * 10)/10;
+
+            if(keys.z == true) {
+                zoomTarget *= 1.5 ** (1/framesPerSecond);
+                updateZoom();
+            }
+            if(keys.x == true) {
+                zoomTarget *= 1/1.5 ** (1/framesPerSecond);
+                updateZoom();
+            }
+            //console.log(boobs.left.currentArea)
+            /*for(let i = 0; i < boobs.left.currentPoints.length; i++) {
+                testPoint(boobs.left.currentPoints, "leftBoob" + i, "purple", 1);
+                testPoint(boobs.right.currentPoints, "rightBoob" + i, "purple", 1);
+            }*/
+            
+            document.getElementById("mainSVG").setAttribute("viewBox", baseScreen.x + " " + baseScreen.y + " " + baseScreen.width + " " + baseScreen.height);
+            
+            //document.getElementById("head").setAttribute("transform", "scale(" + 1 / zoomLevel +") translate(" + fox.position.x + "," + fox.position.y + ") rotate(" + fox.angle + ")");
+            //document.getElementById("shoulders").setAttribute("transform", "scale(" + 1 / zoomLevel +") translate(" + fox.position.x + "," + fox.position.y + ") rotate(" + fox.angle + ")");
+            renderRigidBody(foxBody);
+            //document.getElementById("testPath").setAttribute("d", displayPolygon(foxBody.currentPoints, false));
+            //document.getElementById("testPath").setAttribute("transform", "scale(" + 1 / zoomLevel +")");
+            document.getElementById("leftBoob").setAttribute("d", pathToCurve(boobs.left.currentPoints, false));
+            document.getElementById("rightBoob").setAttribute("d", pathToCurve(boobs.right.currentPoints, false));
+        }
+
+        function generateSoftBody(softBody) {
+            //calculates the appropriate lengths for each connection.
+            //This function only needs to be called at the very beginning.
+            softBody.dotPath = traceWithPoints(softBody.template, softBody.dotsPerLine);
+            softBody.idealArea = Math.abs(shoelaceArea(softBody.dotPath));
+            softBody.currentPoints = [];
+            softBody.oldPoints = [];
+            
+        }
+
+        function foxTick(fox) { //Takes a fox containing a boob, body, and possibly other objects, and renders the internal connections between each one.
+            verletIntegrate(fox.leftBoob);
+            verletIntegrate(fox.rightBoob);
+            verletIntegrate(fox.body);
+            rigidConstraint2(fox.body);
+            for (let o = 0; o <= 10; o++) {
+                volumeConstraint(boobs.left);
+                volumeConstraint(boobs.right);
+
+                edgeConstraint(boobs.left);
+                edgeConstraint(boobs.right);
+
+                cleavageConstraint(boobs.left, boobs.right)
+            }
+
+        }
+
+        function connectFox(fox) {//Generates the attachment between the boobs and the shoulder.
+            let attachment0 = {
+                body0: fox.body,
+                body1: fox.leftBoob,
+                connections: [
+                    {
+                        p0: fox.body.currentPoints[0],
+                        p1: fox.leftBoob.currentPoints[0]
+                    },
+                    {
+                        p0: fox.body.currentPoints[fox.body.currentPoints.length - fox.body.dotsPerLine/2],
+                        p1: fox.leftBoob.currentPoints[fox.leftBoob.currentPoints.length]
+                    }
+                ]
+            }
+            fox.attachments.push(attachment0);
+            let attachment1 = {
+                body0: fox.body,
+                body1: fox.rightBoob,
+                connections: [
+                    {
+                        p0: fox.body.currentPoints[fox.body.currentPoints.length - fox.body.dotsPerLine],
+                        p1: fox.rightBoob.currentPoints[0]
+                    },
+                    {
+                        p0: fox.body.currentPoints[fox.body.currentPoints.length - fox.body.dotsPerLine/2],
+                        p1: fox.rightBoob.currentPoints[fox.rightBoob.currentPoints.length]
+                    }
+                ]
+            }
+            fox.attachments.push(attachment1);
+
+        }
+
+        function attachedConstraint(attachment) { //Takes an "attachment" object containing a list of point pairs and a reference to both soft/rigidbodies
+            for(let pair in attachment.connections.length) {
+
+            }
+        }
+
+        function softBodyTick(softBody) {
+            //This function, when given a softbody, will perform ALL the necessary calculations to make it wobble and whatnot.
+            //The softbody itself must contain all information necessary to determine its behavior.
+            //Collisions with objects will probably happen elsewhere.
+
+            
+            
+            
+        }
+
+        function verletIntegrate(body) { //Performs verlet integration upon an object. Can be soft or rigid.
+            if(body.bodyType == "soft") {
+            let currentPoints = body.currentPoints;
+            let oldPoints = body.oldPoints;
+            for (i = 0; i < currentPoints.length; i++) {
+                        [currentPoints[i], oldPoints[i]] = verlet(currentPoints[i], oldPoints[i],  friction);
+                        let gravityDirection = foxBody.angle + Math.PI/2;//deltaDistillation(colliderPosition, currentPoints[i]).angle;
+
+                        currentPoints[i].x += gravity / ticksPerSecond * Math.cos(gravityDirection) * boobs.sizeMult;
+                        currentPoints[i].y += gravity / ticksPerSecond * Math.sin(gravityDirection) * boobs.sizeMult;
+                        //Gravity falls in the direction that the fox is facing. This is one option for the method of ensuring the boobs face forwards.
+                }
+            } else if (body.bodyType == "rigid") {
+                [body.position, body.oldPosition] = verlet(body.position, body.oldPosition, friction);
+                [body.angle, body.oldAngle] = angularVerlet(body.angle, body.oldAngle, friction);
+            }
+            
+        }
+
+        function volumeConstraint(softBody) { //Performs a volume constraint. Repeats 20 times, or until the volume is close enough that it's not changing much.
+                let currentPoints = softBody.currentPoints;
+                softBody.currentArea = shoelaceArea(currentPoints, softBody.counterClockwise);
+                if(Math.abs(softBody.currentArea - softBody.idealArea)/softBody.idealArea < 0.001) {
+                    return;
+                }
+
+                let normals = {};
+                let gradientSum = 0;
+                for(let i = 0; i < currentPoints.length; i++) {
+                    let p0 = currentPoints.at(i-1),
+                        p1 = currentPoints[i],
+                        p2 = currentPoints[(i+1) % currentPoints.length],
+                        hypot = Math.hypot(p0.x - p2.x, p0.y - p2.y);
+                    normals[i] = { // This is the unit vector in the outside normal direction. Hopefully.
+                        x: (p0.y - p2.y) / hypot * ((softBody.counterClockwise % 2) ? 1 : -1), //The normal direction must point outwards regardless of the direction of the path.
+                        y: (p2.x - p0.x) / hypot * ((softBody.counterClockwise % 2) ? 1 : -1)
+                    }
+                    gradientSum += hypot/2 //because the expansion direction will always be normal to the adjacent nodes, the area gradient will always be maximized.
+                }
+                //gradientSum is now a positive representation of the increase in area per unit distance moved by every vertex in tandem.
+
+                var areaDelta = (softBody.idealArea - softBody.currentArea);
+                let expansionFactor = areaDelta / gradientSum;
+
+                for (let i = 0; i < currentPoints.length; i++) {
+                    let p1 = currentPoints[i];
+                    p1.x += expansionFactor * normals[i].x * 0.1;
+                    p1.y += expansionFactor * normals[i].y * 0.1;
+                }
+                    
+                
+            
+        }
+
+        function edgeConstraint(softBody) {//Performs one iteration of an edge constraint.
+            //For now, I'll assume that all edges are equidistant.
+            let regularConnections = softBody.regularConnections;
+            let currentPoints = softBody.currentPoints;
+            for(let o = 0; o < 2; o++) {
+                if((o+1) % 2) {
+                    regularConnections = reverseArray(regularConnections);
+                }
+                for (let i = 0; i < regularConnections.length; i++) {
+                    let p0 = currentPoints[regularConnections[i].p0],
+                        p1 = currentPoints[regularConnections[i].p1];
+                    let delta = deltaDistillation(p0, p1);
+                    let offset = Math.min(regularConnections[i].length - delta.magnitude, 0); //Currently, there's only tension, no repulsion.
+
+                    p0.x += offset * Math.cos(delta.angle) / 2;
+                    p0.y += offset * Math.sin(delta.angle) / 2;
+                    p1.x -= offset * Math.cos(delta.angle) / 2;
+                    p1.y -= offset * Math.sin(delta.angle) / 2;
+                }
+            }       
+        }
+
+        function cleavageConstraint(leftBoob, rightBoob) { //performs collisions between the fox's breasts the simple way.
+        //Only ever works between softbodies guaranteed to be symmetrical. Even then, it's not perfect, but it is very fast.
+        //Still responds badly to non-symmetrical collisions, as expected. When a general softbody collision is done, that needs to be tried in place of this.
+        //It may still be worth using for times when I can expect collisions to be regular. Or the fox so small that discrepancies can be rounded off.
+             for (let i = 0; i < leftBoob.currentPoints.length; i++) {
+                    let p0 = leftBoob.currentPoints[i],
+                        p1 = rightBoob.currentPoints[i];
+
+                    if(pointInsidePolygon(p0, rightBoob.currentPoints) || pointInsidePolygon(p1, leftBoob.currentPoints)) { //We can assume that the breasts are likely to intersect enough that preliminary tests aren't necessary
+                        let delta = deltaDistillation(p0, p1);
+
+                        let strength = 0.9
+                        p0.x -= delta.magnitude * Math.cos(delta.angle) / 2 * strength
+                        p0.y -= delta.magnitude * Math.sin(delta.angle) / 2 * strength
+                        p1.x += delta.magnitude * Math.cos(delta.angle) / 2 * strength
+                        p1.y += delta.magnitude * Math.sin(delta.angle) / 2 * strength
+
+                        //The below section prevents excessive bounce when the breasts grow by preventing changes in position from affecting velocity.
+                        //Without this, the breasts respond badly to instantaneous increases in size. They should be gradual, or at least sustained.
+                        /*let oldP0 = leftBoob.oldPoints[i],
+                            oldP1 = rightBoob.oldPoints[i];
+                        oldP0.x -= delta.magnitude * Math.cos(delta.angle) / 2 * strength /3 //The old positions are changed as well, preventing any bounce effects. The boobs squish together.
+                        oldP0.y -= delta.magnitude * Math.sin(delta.angle) / 2 * strength /3
+                        oldP1.x += delta.magnitude * Math.cos(delta.angle) / 2 * strength /3
+                        oldP1.y += delta.magnitude * Math.sin(delta.angle) / 2 * strength /3*/
+
+                    }
+                }
+        }
+
+        function generateRigidBody(rigidBody) { //Take an uninitialized rigidbody and set various parameters as appropriate. Most won't change due to the nature of rigidbodies.
+            rigidBody.currentPoints = traceWithPoints(rigidBody.template, rigidBody.dotsPerLine);
+            if(rigidBody.currentPoints[0].x == rigidBody.currentPoints[rigidBody.currentPoints.length-1].x && rigidBody.currentPoints[0].y == rigidBody.currentPoints[rigidBody.currentPoints.length-1].y) {
+                rigidBody.currentPoints.pop(); //If the first and last points meet, remove the final duplicate.
+            }
+            rigidBody.area = shoelaceArea(rigidBody.currentPoints);
+            rigidBody.centerMass = centerOfMass(rigidBody.currentPoints);
+            rigidBody.positionOffset = {x: -rigidBody.centerMass.x, y: -rigidBody.centerMass.y}; //This assumes that the rigidBody was generated at position and angle 0.
+            
+
+            //rigidBody.oldPoints = [];
+            rigidBody.angularMass = 0;
+            rigidBody.originalDeltas = []; //The positions of each point relative to the center mass;
+            for(i = 0; i < rigidBody.currentPoints.length; i++) {
+                //rigidBody.oldPoints[i] = {x: rigidBody.currentPoints[i].x, y: rigidBody.currentPoints[i].y};
+                rigidBody.originalDeltas[i] = deltaDistillation(rigidBody.currentPoints[i], rigidBody.centerMass);
+                rigidBody.angularMass += rigidBody.originalDeltas[i].magnitude;
+            }
+            rigidBody.angularMass /= rigidBody.currentPoints.length;
+
+        }
+
+        /*function rigidConstraint(rigidBody) {//tabulates all moved rigidbody nodes and determines where its new position is.
+            rigidBody.centerMass = centerOfMass(rigidBody.currentPoints);
+            let angleSum = 0;
+            for(i = 0; i < rigidBody.currentPoints.length; i++) {
+                let delta = deltaDistillation(rigidBody.currentPoints[i], rigidBody.centerMass);
+                angleSum += (delta.angle - rigidBody.originalDeltas[i].angle);
+            }
+            angleSum /= rigidBody.currentPoints.length;
+            angleSum = (angleSum + Math.PI * 2) % (Math.PI * 2);
+
+            console.log(angleSum);
+            
+            rigidBody.angle += (angleSum - rigidBody.angle) / 100;
+            
+            rigidBody.position = transformPoint(rigidBody.positionOffset, rigidBody.centerMass, rigidBody.angle);
+            for(i = 0; i < rigidBody.currentPoints.length; i++) {
+                rigidBody.currentPoints[i] = transformPoint(rigidBody.originalDeltas[i], rigidBody.centerMass, rigidBody.angle);
+            }
+            //console.log(rigidBody)
+        }*/ //This function tries to average points, which may have worked, but forces are easier.
+
+        function rigidConstraint2(rigidBody) {
+            for(i = 0; i < rigidBody.currentPoints.length; i++) {
+                rigidBody.currentPoints[i] = transformPoint(rigidBody.originalDeltas[i], rigidBody.centerMass, rigidBody.angle);
+            }
+        }
+        function rigidForce(rigidBody, position, force) { //Applies a force that stems from a specific point.
+            let relativePosition = {
+                x: position.x - rigidBody.position.x, 
+                y: position.y - rigidBody.position.y
+            };
+            let moment = (-relativePosition.y*force.x + relativePosition.x*force.y); //The flux calculation, but it retains components of magnitude of both vectors.
+            rigidBody.angle += moment / angularMass / 100;
+            rigidBody.position.x += force.x;
+            rigidBody.position.y += force.y;
+        }
+
+        function renderRigidBody(rigidBody) {
+            for(let element in rigidBody.element) {
+                rigidBody.element[element].setAttribute("transform", "scale(" + 1 / zoomLevel +") translate(" + rigidBody.position.x + "," + rigidBody.position.y + ") rotate(" + rigidBody.angle * 180 / Math.PI + ")")
+            }
+        }
+
+        function generateFox(position, size) { //Generates an entire fox object. Maybe it's too early to do this.
+
+        }
+
+        function getNormal(vector) { //Returns the unit vector normal 90 degrees from the input vector.
+            return {
+                x: vector.y / Math.hypot(vector.x, vector.y),
+                y: -vector.x / Math.hypot(vector.x, vector.y)
+            }
+        }
+
+        function getFlux(v1, v2) { //Returns a value from 1 to -1 representing how similar vector 1 is to the normal of vector 2.
+            return((-v1.y*v2.x + v1.x*v2.y)/(Math.hypot(v1.x, v1.y)*Math.hypot(v2.x, v2.y)))
+        }
+
+        function getAreaGradient(pPrev, pNext, vector) { //Returns a positive or negative value corresponding to how the area of a shape will change when moving a point along the corresponding vector.
+            //Needs the adjacent points, but not the point itself.
+            //This assumes that if the line segment is pointing upwards, the inside is to the right. Thus, the area is clockwise.
+            let unit = {
+                x: vector.x / Math.hypot(vector.x, vector.y),
+                y: vector.y / Math.hypot(vector.x, vector.y)
+            }
+            return (pPrev.x - pNext.x) * unit.y + (pNext.y - pPrev.y) * unit.x;
+        }
+
+        function testClick() {
+            //Just a testing function to make sure things work repeatedly.
+            boobs.sizeMult *= 1.1;
+            sizeChanged();
+            console.log(boobs);
+        }
+
+        function verlet(current, old, friction) {
+            //Advances a point forward in time by comparing their previous and current position and extrapolating forwards.
+            //Velocity is never stored as an explicit value, but rather emerges based on forces acting upon the object.
+            //As a consequence, speed is only ever relative.
+            let temp = { x: current.x, y: current.y };
+            current.x += (current.x - old.x) * (1-friction);
+            current.y += (current.y - old.y) * (1-friction);
+            old = temp;
+            return [{x: current.x, y: current.y}, {x: old.x, y: old.y}]
+        }
+
+        function angularVerlet(current, old, friction) {
+            let temp = current;
+            current += (current - old) * (1-friction);
+            //current = (current + Math.PI * 2) % (Math.PI * 2);
+            old = temp;
+            return [current, old];
+        }
+
+        function generateBody(softBody, initialPosition, initialAngle) {//Used to actually generate the initial object from a template, size multiplier, and initial location. Can be used to re-render things just out of sight, probably.
+            let path = [];
+            for (i = 0; i < softBody.template.length; i++) {
+                //Doesn't multiply the endpoints
+                path[i] = transformPoint(softBody.template[i], initialPosition, initialAngle, softBody.sizeMult);
+            }
+            if(softBody.id == "foxBoob") { //The endpoints of the boobs don't scale based on size.
+                path[0] = transformPoint(softBody.template[0], initialPosition, initialAngle);
+                path[softBody.template.length] = transformPoint(softBody.template[softBody.template.length], initialPosition, initialAngle);
+            }
+            let dotPath = traceWithPoints(path, softBody.dotsPerLine);
+            softBody.idealArea = shoelaceArea(dotPath, softBody.counterClockwise);
+            let lengthSum = 0;
+            softBody.regularConnections = []
+            for(i = 0; i < dotPath.length -1; i++) {
+                softBody.regularConnections[i] = {
+                    p0: i,
+                    p1: i + 1,
+                    length: 0
+                }
+                lengthSum += Math.hypot(dotPath[i].x - dotPath[i+1].x, dotPath[i].y - dotPath[i+1].y);
+            }
+            for(i = 0; i < softBody.regularConnections.length; i++) {
+                softBody.regularConnections[i].length = lengthSum / softBody.regularConnections.length;
+            }
+            
+        }
+
+        function sizedChanged2(softBody) { //Only recalculates the strength of connections and volume constraints. Doesn't affect point position beyond that.
+            let path = [];
+            for (i = 0; i < softBody.template.length; i++) {
+                //Doesn't multiply the endpoints
+                path[i] = {
+                    x: softBody.template[i].x * softBody.sizeMult,
+                    y: softBody.template[i].y * softBody.sizeMult
+                }
+            }
+            if(softBody.id == "foxBoob") { //The endpoints of the boobs don't scale based on size.
+                path[0] = transformPoint(softBody.template[0], initialPosition, initialAngle);
+                path[softBody.template.length] = transformPoint(softBody.template[softBody.template.length], initialPosition, initialAngle);
+            }
+            let dotPath = traceWithPoints(path, softBody.dotsPerLine);
+            softBody.idealArea = shoelaceArea(dotPath, softBody.counterClockwise);
+            let lengthSum = 0;
+            for(i = 0; i < dotPath.length -1; i++) {
+                lengthSum += Math.hypot(dotPath[i].x - dotPath[i+1].x, dotPath[i].y - dotPath[i+1].y);
+            }
+            for(i = 0; i < softBody.regularConnections.length; i++) {
+                softBody.regularConnections[i].length = lengthSum / softBody.regularConnections.length;
+            }
+        }
+
+        function sizeChanged() {
+            //Used to recalculate spring lengths and volume. Doesn't visibly change anything immediately.
+            for (i = 0; i < boobTemplate.length; i++) {
+                //Doesn't multiply the endpoints
+                boobPath[i] = {
+                    x: boobTemplate[i].x * boobs.sizeMult ** (i != 0 && i != boobPath.length - 1),
+                    y: boobTemplate[i].y * boobs.sizeMult ** (i != 0 && i != boobPath.length - 1)
+                }
+            }
+            boobs.centerReference = {
+                x: centerTemplate.x * boobs.sizeMult,
+                y: centerTemplate.y * boobs.sizeMult
+            }
+
+            dotPath = traceWithPoints(boobPath, boobs.dotsPerLine);
+            boobs.left.idealArea = shoelaceArea(dotPath, "left") * squishFactor;
+            boobs.right.idealArea = -shoelaceArea(dotPath, "right") * squishFactor;
+            boobs.lengthSum = 0;
+            boobs.left.regularConnections = [];
+            boobs.right.regularConnections = [];
+            for (i = 0; i < dotPath.length - 1; i++) {
+                //Notes down the equilibrium length of each regular spring between adjacent points.
+                
+                boobs.left.regularConnections[i] = {
+                    length: ((dotPath[i].x - dotPath[i + 1].x) ** 2 + (dotPath[i].y - dotPath[i + 1].y) ** 2) ** 0.5,
+                    p0: i,
+                    p1: i + 1
+                }
+                boobs.right.regularConnections[i] = {
+                    length: boobs.left.regularConnections[i].length,
+                    p0: i,
+                    p1: i + 1
+                }
+                boobs.lengthSum += boobs.left.regularConnections[i].length;
+            }
+            /*boobs.left.regularConnections.push ({
+                length: ((dotPath[0].x - dotPath[dotPath.length - 1].x) ** 2 + (dotPath[0].y - dotPath[dotPath.length - 1].y) ** 2) ** 0.5,
+                p0: 0,
+                p1: dotPath.length-1,
+                attraction: 1,
+                repulsion: 1
+            })
+            boobs.right.regularConnections.push({
+                length: ((dotPath[0].x - dotPath[dotPath.length - 1].x) ** 2 + (dotPath[0].y - dotPath[dotPath.length - 1].y) ** 2) ** 0.5,
+                p0: 0,
+                p1: dotPath.length - 1,
+                attraction: 1,
+                repulsion: 1
+            })
+            boobs.lengthSum += boobs.left.regularConnections[i].length;*/
+
+            for (i = 0; i < boobs.left.regularConnections.length; i++) {
+                boobs.left.regularConnections[i].length = boobs.lengthSum / (dotPath.length - 1);
+                boobs.right.regularConnections[i].length = boobs.lengthSum / (dotPath.length - 1);
+            }
+
+        }
+
+
+
+        function shoelaceArea(path, ccw) {
+            //path is an array of polygon points. Returns an area value based on that array.
+            //Direction doesn't really matter.
+            if(ccw == "left") {
+                ccw = true;
+            } else if (ccw == "right") {
+                ccw = false;
+            }
+
+            var area = 0;
+            for (i = 0; i < path.length - 1; i++) {
+                area += path[i].x * path[i + 1].y;
+                area -= path[i].y * path[i + 1].x;
+            }
+            area += path[path.length-1].x * path[0].y;
+            area -= path[path.length - 1].y * path[0].x;
+            if(ccw) {
+                return -area;
+            } else {
+                return area;
+            }
+        }
+
+        function centerOfMass(path, area) {
+            area = shoelaceArea(path, false) //Right is just the one that isn't reversed.
+            //path is an array of polygon points.
+
+            var centerMass = {x: 0, y: 0}
+            for(i=0; i< path.length - 1; i++) {
+                centerMass.x += (path[i].x + path[i+1].x) * ((path[i].x * path[i+1].y) - (path[i+1].x * path[i].y));
+                centerMass.y += (path[i].y + path[i+1].y) * ((path[i].x * path[i+1].y) - (path[i+1].x * path[i].y));
+            }
+            centerMass.x += (path[path.length-1].x + path[0].x) * ((path[path.length-1].x * path[0].y) - (path[0].x * path[path.length-1].y));
+            centerMass.y += (path[path.length-1].y + path[0].y) * ((path[path.length-1].x * path[0].y) - (path[0].x * path[path.length-1].y));
+            centerMass.x /= (3 * area);
+            centerMass.y /= (3 * area);
+            return centerMass;
+        }
+
+        function distanceToSegment(p0, p1, p2) {
+            //finds the distance from point 0 to the line segment between points 1 and 2.
+            //returns distance, point, and t.
+            let output = {}
+            output.t = ((p0.x-p1.x) * (p1.x - p2.x) + (p0.y-p1.y) * (p1.y - p2.y))/((p2.x-p1.x) **2 * (p2.y-p1.y) ** 2);
+            output.t = Math.max(Math.min(output.t, 1), 0); //Clamps the position to inside the line.
+            output.point = lerp(p1, p2, output.t);
+            output.distance = Math.hypot(output.point.x - p0.x, output.point.y - p0.y);
+            return output;
+        }
+
+        function getBoundingBox(path, error = 1) {
+            //Takes a list of nodes and finds the bounding box. Used for optimization of calculations.
+            //Error determines the margin of error. At 1, only exactness is used. At greater than one, the output box is slightly larger.
+            let bounds = {
+                min: {
+                    x: path[0].x,
+                    y: path[0].y
+                },
+                max: {
+                    x: path[0].x,
+                    y: path[0].y
+                }
+                }
+            for(i = 1; i < path.length; i++) {
+                bounds.min.x = Math.min(bounds.min.x, path[i].x);
+                bounds.min.y = Math.min(bounds.min.y, path[i].y);
+                bounds.max.x = Math.max(bounds.max.x, path[i].x);
+                bounds.max.y = Math.max(bounds.max.y, path[i].y);
+            }
+            let center = {
+                x: (bounds.min.x + bounds.max.x) / 2,
+                y: (bounds.min.y + bounds.max.y) / 2
+            }
+            bounds.min.x -= (bounds.max.x - bounds.min.x) / 2 * (error - 1);
+            bounds.max.x += (bounds.max.x - bounds.min.x) / 2 * (error - 1);
+            bounds.min.y -= (bounds.max.y - bounds.min.y) / 2 * (error - 1);
+            bounds.max.y += (bounds.max.y - bounds.min.y) / 2 * (error - 1);
+            return bounds;
+
+        }
+
+        function detectCollision(softBody0, softBody1) {
+            let bounds = getBoundingBox(softBody1.currentPoints, 1);
+            for(i = 0; i < softBody0.currentPoints.length; i++) {
+                let p = softBody0.currentPoints[i];
+                if(isBetween(p.x, bounds.min.x, bounds.max.x) && isBetween(p.y, bounds.min.y, bounds.max.y)) {
+                    if(pointInsidePolygon(p, softBody1.currentPoints)) {
+                        testPoint(p, softBody0.id + i, "red", 3 );
+                    } else {
+                        testPoint(p, softBody0.id + i, "blue", 3 );
+                    }
+
+                } else {
+                    testPoint(p, softBody0.id + i, "blue", 3 );
+                }
+            }
+        }
+
+        function softBodyCollision(softBody0, softBody1) {
+            //Determines if any of the vertices of the first softbody have any points inside the second, and repels them correspondingly.
+            //May need to be iterated or alternated over to be fully accurate.
+            let bounds = getBoundingBox(softBody1.currentPoints, 1);
+            for(i = 0; i < softBody0.currentPoints.length; i++) {
+                let p = softBody0.currentPoints[i];
+                //testPoint(p, softBody0.id + i, "red", 3);
+                if(isBetween(p.x, bounds.min.x, bounds.max.x) && isBetween(p.y, bounds.min.y, bounds.max.y)) {//if the point is inside the bounding box, and therefore possible to be colliding
+                    //console.log(0);
+                    if(pointInsidePolygon(p, softBody1.currentPoints)) {//If point overlaps with the other softbody
+                        //console.log("colliding");
+                        
+                        
+                        let closestSegment = distanceToSegment(p, softBody1.currentPoints[softBody1.currentPoints.length-1], softBody1.currentPoints[0]);
+                        let intersectionPoint = softBody1.currentPoints.length-1;
+                        for(let o = 0; o < softBody1.currentPoints.length - 1; o++) {
+                            let segment = distanceToSegment(p, softBody1.currentPoints[o], softBody1.currentPoints[o+1]);
+                            if(segment.distance < closestSegment.distance) {
+                                closestSegment = segment;
+                                intersectionPoint = o;
+                            };
+                        }
+                        
+                        //By this point, closestSegment contains the point on the perimeter closest to the overlapping point, as well as the two adjacent vertices that determine how the other body reacts.
+                        //IntersectionPoint is the index of the first point of that segment.
+                        //That was the detection portion. The repulsion is below.
+                        let displacementVector = { //The unit vector for the overlapping point's displacement direction. The segment will move in the opposite direction.
+                            x: (closestSegment.point.x - p.x) / closestSegment.distance,
+                            y: (closestSegment.point.y - p.y) / closestSegment.distance
+                        }
+                        let pPrev = softBody0.currentPoints.at(i - 1);
+                        let pNext = softBody0.currentPoints[(i + 1) % softBody0.currentPoints.length];
+                        let gradient0 = Math.abs(getAreaGradient(pPrev, pNext, displacementVector)); //How much the overlapping point's area changes per distance moved.
+                        
+                        let p0 = softBody1.currentPoints.at(intersectionPoint - 1),
+                            p1 = softBody1.currentPoints[intersectionPoint], //This is the first point on the nearest line segment.
+                            p2 = softBody1.currentPoints[(intersectionPoint+1) % softBody1.currentPoints.length], //This is the second point on the nearest line segment.
+                            p3 = softBody1.currentPoints[(intersectionPoint+2) % softBody1.currentPoints.length];
+                        let magnitude2, magnitude1;
+                        if(closestSegment.t = 0) {
+                            magnitude1 = 1;
+                            magnitude2 = 0;
+                        } else if (closestSegment.t = 1) {
+                            magnitude1 = 0;
+                            magnitude2 = 1;
+                        } else {
+                            magnitude2 = 1/(1/closestSegment.t - 2 - 2 * closestSegment.t) //how much point 2 moves relative to point 0
+                            magnitude1 = magnitude2 * (1 - closestSegment.t) / closestSegment.t //how much point 1 moves relative to point 0
+                        }
+                        
+                        let gradient1 = Math.abs(getAreaGradient(p0, p2, displacementVector)) * magnitude1 + Math.abs(getAreaGradient(p1, p3, displacementVector)) * magnitude2 //How much the overlapped segment's area changes per movement of point t.
+                        
+                        //The intersected segment moves less towards the center of the segment, as both points need to move more. The overall gradient is accurate.
+                        let mass1 = 1;
+                        let mass0 = 1; //These determine the corresponding density of the bodies. For now, it's assumed that the colliding bodies are equivalent.
+                        let movementRatio = gradient1 * mass1 / (gradient0 * mass0 + gradient1 + mass1);
+                        
+                        let destinationPoint = lerp(p, closestSegment.point, movementRatio) //This is where the intersecting point moves to.
+                        testPoint(destinationPoint, softBody0.id + i, "red", 3);
+
+
+                        let springFactor = 0.1;
+                        let dampeningFactor = 0.05;
+
+                        p.x += (destinationPoint.x - p.x) * springFactor;
+                        p.y += (destinationPoint.y - p.y) * springFactor;
+
+                        
+
+                        softBody0.oldPoints[i].x += (destinationPoint.x - p.x) * dampeningFactor;
+                        softBody0.oldPoints[i].y += (destinationPoint.y - p.y) * dampeningFactor;
+                        
+                        p1.x -= displacementVector.x * (1 - movementRatio) * magnitude1 * springFactor; //The line segment points move in the direction of the displacement vector correspondingly to their relative magnitudes.
+                        p1.y -= displacementVector.y * (1 - movementRatio) * magnitude1 * springFactor;
+                        p2.x -= displacementVector.x * (1 - movementRatio) * magnitude2 * springFactor;
+                        p2.y -= displacementVector.y * (1 - movementRatio) * magnitude2 * springFactor;
+
+                        softBody1.oldPoints[intersectionPoint].x -= displacementVector.x * (1 - movementRatio) * magnitude1 * dampeningFactor
+                        softBody1.oldPoints[intersectionPoint].y -= displacementVector.y * (1 - movementRatio) * magnitude2 * dampeningFactor
+                        softBody1.oldPoints[(intersectionPoint+1) % softBody1.currentPoints.length].x -= displacementVector.x * (1 - movementRatio) * magnitude2 * dampeningFactor
+                        softBody1.oldPoints[(intersectionPoint+1) % softBody1.currentPoints.length].y -= displacementVector.y * (1 - movementRatio) * magnitude2 * dampeningFactor
+                        //The repulsion is above. If nothing is there, I haven't made it yet.
+                    } else {
+                        testPoint(p, softBody0.id + i, "blue", 3);
+                    }
+                } else {
+                    testPoint(p, softBody0.id + i, "blue", 3);
+                }
+
+            }
+        }
+            
+
+        function reverseArray(array, toggle = true) {
+            var result = []
+            if(toggle) {
+                for (let i = array.length-1; i >= 0; i--) {
+                    result.push(array[i]);
+                }
+            } else {
+                result = array;
+            }
+            return result;
+        }
+
+        function lerp(a, b, t) {
+            //Accepts both points and single numbers
+            //Is allowed to continue for t values outside (0,1).
+            if (a.x == undefined) {
+                return a + (b - a) * t
+            } else {
+                return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+            }
+
+        }
+
+        function deltaDistillation(p0, p1) {
+            //returns a point that's the difference between the two
+            let x = p0.x - p1.x,
+                y = p0.y - p1.y;
+            return {
+                x:x,
+                y:y, 
+                magnitude: (x ** 2 + y ** 2) ** 0.5, 
+                angle: Math.atan2(y, x)
+            }
+            
+        }
+
+        function transformPoint(point, translate, rotate = 0, scale = 1) {
+            //The point is first rotated in radians, then translated by another vector.
+            let cos = Math.cos(rotate),
+                sin = Math.sin(rotate);
+            return {
+                x: (point.x * cos - point.y * sin) * scale + translate.x,
+                y: (point.y * cos + point.x * sin) * scale + translate.y
+            }
+        }
+
+        function pointInsidePolygon(point, polygon) {
+            //Point is x/y object. Polygon is an array of x/y objects. Works on concave shapes. Expects the given point array to be a nonrepeating closed loop.
+            let pointInside = 0;
+            for(let i = -1; i < polygon.length - 1; i++) {
+                let [x1, x2, y1, y2] = [polygon.at(i).x, polygon.at(i+1).x, polygon.at(i).y, polygon.at(i+1).y];
+                if(isBetween(point.y, y1, y2) && (point.x < x1 + (point.y - y1)/(y2-y1) * (x2 - x1))) { //If on the same elevation, and to the left of the line.
+                    pointInside++;
+                    //console.log(x1);
+                }
+            }
+            
+            
+            if(pointInside % 2 == 1) {
+                //testPoint(point, "repeat", "red", 1);
+                return true;
+            } else {
+                //testPoint(point, "repeat", "blue", 1);
+                return false;
+            }
+        }
+
+        function isBetween(a, b1, b2) {//determines if a number is within the bounds of b1 and b2.
+            return (a < b1 != a < b2);
+        }
+
+        function switchBoob(point, boob) {
+            if(boob == "right") {
+                return {x: -point.x, y:point.y}
+            } else {
+                return point;
+            }
+        }
+
+        function bezierPoint(path, t, segment = 0) {
+            //path is an array of 3n+1 points.
+            //t is an indicator of how far along the path it is. Each integer is a separate segment.
+            //Segment being 1 indicates that the subdivided line afterwards should be included. Being -1 indicates that the line before is included.
+            let line = Math.floor(t);
+            let needle = t % 1;
+            if (needle == 0 && segment == 0) {
+                return path[line * 3];
+            } else {
+                let p0 = path[line * 3];
+                let p1 = path[line * 3+1];
+                let p2 = path[line * 3+2];
+                let p3 = path[line * 3+3];
+
+                let a = lerp(p0, p1, needle);
+                let b = lerp(p1, p2, needle);
+                let c = lerp(p2, p3, needle);
+
+                let d = lerp(a, b, needle);
+                let e = lerp(b, c, needle);
+
+                let point = lerp(d, e, needle);
+
+                if (segment == 1) {
+                    point = [point, e, c, p3];
+                } else if (segment == -1) {
+                    point = [p0, a, d, point];
+                } else {
+                    return point;
+                }
+            }
+        }
+
+        function testPoint(point, id, color = "red", r = 5) {
+            circle = document.getElementById(id);
+            if (circle == undefined || id == "repeat") {
+                circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.id = id;
+                document.getElementById("mainSVG").append(circle);
+            }
+            circle.style.fill = color;
+            circle.setAttribute("cx", point.x / zoomLevel);
+            circle.setAttribute("cy", point.y / zoomLevel);
+            circle.setAttribute("r", r / zoomLevel);
+        }
+
+        function traceWithPoints(path, segmentsPerLine) {
+            //returns a list of points dotted along a bezier path. Results in 1 more than the number of segments * number of lines.
+            let lines = (path.length - 1) / 3
+            var result = []
+            for (i = 0; i <= lines * segmentsPerLine; i ++) {
+                result.push(bezierPoint(path, i / segmentsPerLine));
+            }
+            return result;
+        }
+
+
+
+        function BezierTrim(path, tStart, tEnd) {
+            //Path is an array of 3n+1 points, in the form of a quadratic bezier curve.
+            //tstart and tend indicate where the path should be spliced, returning 3n + 1 points in turn.
+            //Can accept single lines of 4 points.
+
+            let originalLength = (path.length - 1) / 3;
+            if (originalLength % 1 != 0) {
+                console.log("The path is not complete.")
+                return
+            } else if (originalLength > tStart || originalLength > tEnd) {
+                console.log("the path is not long enough.")
+                return
+            } else if (tStart = tEnd) {
+                //If necessary, this can be replaced with a pointfinding operation instead.
+                console.log("the indicated line has no length")
+                return
+            }
+            if (tStart > tEnd) {
+                //Reverses everything's order so that the resultant line is in the intended direction
+                path = reverseArray(path);
+                [tStart, tEnd] = [tEnd, tStart];
+            }
+            let lineStart = Math.floor(tStart);
+
+            var result = bezierPoint(path, tStart, 1);
+            
+            let lineEnd = Math.floor(tEnd);
+            let needleEnd = tEnd % 1;
+            if (lineStart == lineEnd) {
+                result = bezierPoint(result, tEnd, -1);
+            } else {
+                for (i = lineStart + 1; i < lineEnd; i++) {
+                    result.push(path[i * 3 + 1]);
+                    result.push(path[i * 3 + 2]);
+                    result.push(path[i * 3 + 3]);
+                }
+                let segmentEnd = bezierPoint(path, tend, -1);
+                result.push(segmentEnd[1]);
+                result.push(segmentEnd[2]);
+                result.push(segmentEnd[3]);
+            }
+
+            return result;
+
+        }
+
+        function displayPolygon(points) {
+            var result = "M " + points[0].x + "," + points[0].y + " L ";
+            for (i = 1; i < points.length; i++) {
+                result += " " + points[i].x + "," + points[i].y;
+            }
+            return result;
+        }
+
+        function pathToCurve(path, closed = true) {
+            path = shrinkPath(path, zoomLevel);
+            //Takes an array of points (in polygon format) and returns a d value to be displayed as a path.
+            //"closed" determines if the first and last points should be connnected.
+            //This is done by taking the midpoint of every line segment as an endpoint of the curve and putting the control points on the vertices.
+            var result = "M ";
+            if (closed) { //If the shape is closed, the "start" is between the true start and endpoints.
+                result += (path[path.length - 1].x + path[0].x)/2 + "," + (path[path.length-1].y + path[0].y)/2;
+            } else {
+                result += path[0].x + ","  + path[0].y;
+            }
+            result += " Q " + path[0].x + ","  + path[0].y;
+            result += " " + (path[0].x + path[1].x)/2 + "," + (path[0].y + path[1].y)/2;
+            for (i = 2; i < path.length - (closed ? 0 : 1); i++) {
+                result += " " + (path[i-1].x) + "," + (path[i-1].y);
+                result += " " + (path[i-1].x + path[i].x)/2 + "," + (path[i-1].y + path[i].y)/2;
+            }
+            
+            if (closed) { 
+                result += " " + (path[path.length-1].x) + "," + (path[path.length-1].y);
+                result += " " + (path[path.length-1].x + path[0].x)/2 + "," + (path[path.length-1].y + path[0].y)/2;
+            } else {
+                result += " " + (path[path.length-2].x) + "," + (path[path.length-2].y);
+                //result += " " + (path[path.length-1].x + path[path.length-2].x)/2 + "," + (path[path.length-1].y + path[path.length-2].y)/2;
+                result += " " + (path[path.length-1].x) + "," + (path[path.length-1].y);
+                //result += " " + (path[path.length-1].x) + "," + (path[path.length-1].y);
+                //result += " " + path[path.length-1].x + ","  + path[path.length-1].y;
+            }
+            //testPoint(path[path.length-1], "point1", "red", 1);
+            //testPoint(path[path.length-2], "point2", "purple", 1);
+            return result;
+            
+        }
+
+        function shrinkPath(path, factor) {
+            //Reduces the scale of the path such that it's easier to render.
+            output = []
+            for(let i = 0; i < path.length; i++) {
+                output[i] = {
+                    x: path[i].x / factor,
+                    y: path[i].y / factor
+                }
+            }
+            return output;
+        }
+
+        function lengthUnit(value) {
+            let unit = "";
+            if (value < 1) {
+                value *= 100;
+                unit = "centimeter"
+            } else if (value < 1000) {
+                unit = "meter"
+            } else if (value < 12756000) {
+                value /= 1000;
+                unit = "kilometer"
+            } else if (value < 149600000000) {
+                value /= 12756000;
+                unit = "earth-length"
+            } else if (value < 9461000000000000) {
+                value /= 149600000000
+                unit = "astronomical unit"
+            } else if (value < 946100000000000000000) {
+                value /= 9461000000000000
+                unit = "light-year"
+            } else if (value < 880000000000000000000000000) {
+                value /= 9461000000000000
+                unit = "galaxy-length"
+            } else {
+                value /= 880000000000000000000000000;
+                unit = "universe"
+            }
+            value = Math.floor(value * 100)/100;
+            if (value != 1) {
+                unit += "s";
+            }
+            return value + " " + unit;
+        }
+
+        function addVectors(p1, p2) {
+            return {
+                x: p1.x + p2.x,
+                y: p1.y + p2.y
+            }
+        }
+
+        function averageVectors(pointList) {
+            let average = {x: 0, y: 0};
+            for(let i = 0; i < pointList.length; i++) {
+                average.x += pointList[i].x;
+                average.y += pointList[i].y;
+            }
+            average.x /= pointList.length;
+            average.y /= pointList.length;
+            return average;
+        }
+
+
+        /*
+        To create an effective softbody collision system is actually pretty simple:
+        - Detect if a point is inside a different softbody.
+        - Determine the line segments that have a normal range intersecting it. Select the closest (but below 0) distance.
+        - Offset the overlapping point by half that distance. Don't worry about the segments- one of their points is also overlapping and will be caught in the same way.
+        - Probably. These segments should be about the same size.
+        - Repeat 10 times or so to ensure accuracy.
+
+        I'm not sure if I want to also offset the overlapping point's old coordinates to reduce bounce. I'll have to see for certain.
+        Because I want to leave only a line behind, but not a tangible gap, I'll need to reduce bounce and consider how it'll be smoothed.
+        Nope, that'll miss in the event of concave sections. While it'll likely be caught by other segments, it'll be pushed in the wrong direction entirely.
+
+        I could try to magnetize corresponding points that are close enough together, requiring force to free?
+        Instead, I could ensure an overlapping point triggers the point pairs to meet each other halfway. I'd just need to detect the overlap at that point. Yeah, that should be a good response.
+
+
+        I need to make a general handler for softbodies. That means no connection nonsense, they'll just have a set total perimeter and node count which turns into an average length. Same for squishiness of the springs.
+        The areolae and nipples can be handled via softbodies. The connecting points are just always connected, such that every tick they're returned to each other regardless of position.
+        
+        The current volume failure state has 4 possible solutions:
+        positive high - contraction. Stable.
+        positive low - expansion. Stable.
+        negative high - expansion. Unstable.
+        negative low - expansion. Unstable.
+
+        The solution is to flip the direction of volumetric expansion when the sign of the volume is opposite from what it should be.
+
+        The current cleavage solution is practical, but causes instability. A general softbody collision system is necessary for it.
+        Detecting cleavage nodes that are together is still useful for detecting if an object is inside the cleavage.
+
+        Right now, all points are controlled by the same factor by the volume calculations. Instead, they need to be modified based on their overall area gradient- that is, the amount of area gained by moving them.
+        This changes the volume force's direction and magnitude based on adjacent nodes.
+        
+        At the start of each tick, I should get each node's distance from the center of mass. at the end of the tick, I find the distance from the new center of mass, and reverse some of the changes done.
+        The softbodies are spinning along their direction of motion. For the boobs, they're symmetrical, so they just cancel out, but I need to solve that for other softbodies. If there are any others. The solution is to alternate between forwards and reverse edge constraints.
+        Bro- just make the fox's shoulders a rigid collider. That should be a step towards solving both the cleavage mass and turning issue.
+        I need to track whether a softbody's points go clockwise or counterclockwise. That determines how positive/negative area calcs are done and such.
+        A segment can turn into a flux value positive or negative by finding the similarity of the vectors rather than the difference.
+        Expansion is done with equivalent strength on all points, but in the "outer" direction which remains correct when inside out.
+        Volume isn't actually the most important constraint, colliders are.
+
+        It's okay for cleavage squishes to still be done this way, even if it's cheating. It's a lot cheaper to do, and has functionally the same result.
+        I can only consider this because most of the softbodies will be boobs, of course.
+
+        The volume calculations should be tweaked slightly as sizeMult approaches 0. Due to the shoulder and cleavage connections, the volume to perimeter ratio is slightly different.
+        The general collider can work. I just need to ensure that volume is always high enough for the edges to be taut.
+
+        When the boobs go inside each other, there's a simple solution to unstick them: Add an exemption to the softbody colliders until they get out on their own, on the outer half.
+        Detecting that fault involves comparing the distance between the centers of mass vs the nearest points.
+
+
+
+        Whatever I make, I want little (massive) goobers to be able to say things to you.
+        "Devastated right now"
+        "Just learned that a blorbo is a character from a fiction you hyperfixate on"
+        "I thought it was the sound boobs make :("
+        "Titties are my blorbo"
+
+        "Remember to have some variety in your vocabulary!"
+        "Titties, boobs, breasts, bust, jugs, tits, melons, mountains, mounds, baps, knockers, rack"
+        "Variety is the spice of life."
+
+        "Can I help you-"
+        (She turns around, her breasts knocking you aside)
+        "OH I'M SO SORRY"
+
+        "Mrrp mrap yip yap yop"
+        "Sometimes you have to listen to your inner fox"
+        "And let your outer fox take a break"
+        */
+
+    </script>
+</body>
+</html>
