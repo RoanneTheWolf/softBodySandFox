@@ -47,10 +47,11 @@
         <br>(but you can press G to pause the growth)
         <br>Stiffness Factor (+/- keys): <span id="squishDisplay">1</span>x
         <br>Gravity ([/] keys): <span id="gravityDisplay">19</span>
+        <br>Pulsing Growth Multiplier: <span id="surgeDisplay">1.01x</span>
         <br>Current size: <span id="sizeDisplay">1 meter</span>
         <br><span id="warningMessage" class="noDisplay" style="color:pink;">There's still a few bugs. Swing the boobs in a circle and they usually fix themselves.</span>
     </div>
-    <div style="position: relative; float: right; z-index: 100;">
+    <div style="position: relative; float: right; z-index: 100; pointer-events: none;">
         <div class="keyButton break" onclick="toggleKey('q', this)">&#x21ba;</div>
         <div class="keyButton" onclick="toggleKey('e', this)">&#x21bb;</div>
         <div class="keyButton break" onclick="toggleKey('x', this)">&#x21f1;</div>
@@ -66,7 +67,6 @@
         <div class="keyButton smaller" onclick="keyPressed('l')">+++</div>
         <div class="keyButton smaller" onclick="keyPressed('k')">++</div>
         <div class="keyButton smaller" onclick="keyPressed('j')">+</div>
-        
     </div>
     <svg width="100%"
          height="100%"
@@ -150,7 +150,7 @@
                 dotsPerLine: 30,
                 currentArea: 0,
                 idealArea: 0,
-                sizeMult: 0.4,
+                sizeMult: 0.2,
                 mass: 1,
                 counterClockwise: true,
                 regularConnections: [],
@@ -175,7 +175,7 @@
                 dotsPerLine: 30,
                 currentArea: 0,
                 idealArea: 0,
-                sizeMult: 0.4,
+                sizeMult: 0.2,
                 mass: 1,
                 counterClockwise: false,
                 regularConnections: [],
@@ -494,7 +494,7 @@
         var surgeOn = false;
         var surgeSize = 0;
         var surgeTimer = 5;
-        var surgePayoff = 1;
+        var surgePayoff = 1.01;
 
 
         let ticksPerSecond = 100;
@@ -558,12 +558,14 @@
             }
             if(surgeOn) {
                 surgeTimer -= (1/ticksPerSecond * (keys.shift ? 5 : 1));
-                zoomTarget *= surgePayoff ** ((keys.shift ? 5 : 1)/ticksPerSecond/5)
+                zoomLevel *= surgePayoff ** ((keys.shift ? 5 : 1)/ticksPerSecond/5);
+                zoomTarget *= surgePayoff ** ((keys.shift ? 5 : 1)/ticksPerSecond/5);
             }
             if(surgeTimer <= 0) {
                 growthSurge(surgePayoff);
                 surgePayoff *= 1.02
-                surgeTimer = 5;
+                surgeTimer = 5 - 1/ticksPerSecond;
+                document.getElementById("surgeDisplay").innerText = Math.round(surgePayoff * 100) / 100 + "x";
             }
             foxTemplate.leftBoob.sizeMult += Math.min(surgeSize * 3 * (1/ticksPerSecond), surgeSize);
             foxTemplate.rightBoob.sizeMult = foxTemplate.leftBoob.sizeMult;
