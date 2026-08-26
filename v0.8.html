@@ -62,6 +62,7 @@
         <div class="keyButton smaller" onclick="keyPressed('[')">grav-</div>
         <div class="keyButton smaller break" onclick="keyPressed('g', this, true)">growing</div>
         <div class="keyButton smaller break" onclick="keyPressed(' ', this, true)">pulsing</div>
+        <div class="keyButton smaller break" onclick="keyPressed('o', this, true)">autozoom</div>
         <div class="keyButton smaller break" onclick="toggleKey('shift', this)">faster!</div>
         <div class="keyButton smaller break" onclick="keyPressed(';')">++++</div>
         <div class="keyButton smaller" onclick="keyPressed('l')">+++</div>
@@ -500,6 +501,7 @@
         var surgeSize = 0;
         var surgeTimer = 5;
         var surgePayoff = 1.01;
+        var autoZoom = false;
 
 
         let ticksPerSecond = 100;
@@ -561,10 +563,22 @@
             if(foxTemplate.leftBoob.idealArea * 1 > (baseScreen.width * baseScreen.height * zoomTarget ** 2)) {
                 zoomTarget *= 2;
             }
+            if (autoZoom) {
+                if (surgeOn) {
+                    zoomLevel *= surgePayoff ** ((keys.shift ? 5 : 1)/ticksPerSecond/5);
+                    zoomTarget *= surgePayoff ** ((keys.shift ? 5 : 1)/ticksPerSecond/5);
+                }
+                if (autoGrow) {
+                    zoomLevel *= growthRate ** (1/ticksPerSecond);
+                    zoomTarget *= growthRate ** (1/ticksPerSecond);
+                    if(keys.shift) {
+                        zoomLevel *= 1.5 ** (1/ticksPerSecond);
+                        zoomTarget *= 1.5 ** (1/ticksPerSecond);
+                    }
+                }
+            }
             if(surgeOn) {
                 surgeTimer -= (1/ticksPerSecond * (keys.shift ? 5 : 1));
-                zoomLevel *= surgePayoff ** ((keys.shift ? 5 : 1)/ticksPerSecond/5);
-                zoomTarget *= surgePayoff ** ((keys.shift ? 5 : 1)/ticksPerSecond/5);
             }
             if(surgeTimer <= 0) {
                 growthSurge(surgePayoff);
@@ -699,6 +713,8 @@
             } else if (key.toLowerCase() == ";") {
                 growthSurge(4);
                 zoomTarget *= 3;
+            } else if (key.toLowerCase() == "o") {
+                autoZoom = !autoZoom;
             }
             keys[key.toLowerCase()] = true;
             if(element && toggled) {
